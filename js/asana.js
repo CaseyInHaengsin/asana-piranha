@@ -38,43 +38,60 @@ function getTasks () {
 			url = base + 'projects/' + projectId + '/tasks?opt_pretty&opt_expand=html_notes&opt_expand=this'
       $.get({url}, function(response){
         tasks = response.data
-        customFields(tasks)
+        createTasks(tasks)
       })
 		}
 	});
 }
 
 
-function customFields(tasks) {
-	for(var i = tasks.length-1; i >= 0; i--) {
-		taskName = tasks[i].name
-		htmlNotes = tasks[i].html_notes
-		taskFields = tasks[i].custom_fields
+function createTasks(tasks) {
+	// for(var i = tasks.length-1; i >= 0; i--) {
+	if(tasks.length > 0){
+		task = tasks.pop();
+		taskName = task.name
+		htmlNotes = task.html_notes
+		taskFields = task.custom_fields
 		customFields = {};
 		
 		$.each(taskFields, function(){
-		customId = this.id
-    customType = this.enum_value
-    
-		if (customType == null){
-			console.log('Custom field value null {' + customId + ': null} for: '+ taskName)
-		} else {
-      customValue = JSON.stringify(this.enum_value.id)
-			customFields[customId] = customValue;
+			customId = this.id
+			customType = this.enum_value
+			
+			if (customType != null){
+				customValue = JSON.stringify(this.enum_value.id)
+				customFields[customId] = customValue;
+			} else {
+				console.log('Custom field value null {' + customId + ': null} for: '+ taskName);
 			}
-    })
-    url = base + 'tasks'
-    $.post({
-      url,
-      data: {
-        "name": taskName,
-        "projects": project,
-        "assignee": "me",
-        "html_notes": htmlNotes,
-        "custom_fields": customFields 
-        }
-    }) 
-	} 
+		});
+		createTask(taskName,project,htmlNotes,customFields,function(){
+			console.log("Created a task names", taskName);
+			createTasks(tasks);
+		},function(){
+			console.log("Failed to create a task!",taskName);
+		});
+	} else {
+		console.log("Done creating tasks");
+	}
+}
+
+function createTask(taskName,project,htmlNotes,customFields,onSuccess,onFail){
+	url = base + 'tasks'
+	$.post({
+		url,
+		data: {
+			"name": taskName,
+			"projects": project,
+			"assignee": "me",
+			"html_notes": htmlNotes,
+			"custom_fields": customFields 
+			}
+	}).done(function(){
+		onSuccess();
+	}).fail(function(){
+		onFail();
+	});
 }
 
 
