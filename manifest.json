@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Asana Piranha",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Import Asana microtemplates for Instructure, Inc - INTERNAL ONLY",
   "icons": {
      "16": "icon16.png",

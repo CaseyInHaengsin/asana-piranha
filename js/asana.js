@@ -2,21 +2,6 @@ project = window.location.pathname.split('/')[2];
 base = 'https://app.asana.com/api/1.0/';
 
 
-// (function() {
-// 	if(!chrome.runtime.error){
-// 		manifest = chrome.runtime.getManifest();
-// 		client_name = ['chrome-extension', manifest.version, manifest.name].join(':'); // Be polite to Asana API
-// 	}
-// })
-
-
-$.ajaxSetup({
-	beforeSend: function(xhr) {
-		xhr.setRequestHeader('X-Allow-Asana-Client', '1');
-	}
-});
-
-
 import_link = '<div class="TopbarPageHeaderGlobalActions-omnibutton">                                                         	   \
                     <select class="Button Button--small" id="template-menu">                                                       \
                       <option></option>                                                                                            \
@@ -38,21 +23,20 @@ function getTasks () {
 			url = base + 'projects/' + projectId + '/tasks?opt_pretty&opt_expand=html_notes&opt_expand=this'
       $.get({url}, function(response){
         tasks = response.data
-        createTasks(tasks)
+        customFields(tasks)
       })
 		}
 	});
 }
 
-
-function createTasks(tasks) {
-	// for(var i = tasks.length-1; i >= 0; i--) {
+//loop through array one at a time, call itself to ensure the requests are synchronous (instead of using a for loop)
+function customFields(tasks) {
 	if(tasks.length > 0){
 		task = tasks.pop();
 		taskName = task.name
-		htmlNotes = task.html_notes
+		notes = task.html_notes
 		taskFields = task.custom_fields
-		customFields = {};
+		customFieldsArr = {};
 		
 		$.each(taskFields, function(){
 			customId = this.id
@@ -60,23 +44,26 @@ function createTasks(tasks) {
 			
 			if (customType != null){
 				customValue = JSON.stringify(this.enum_value.id)
-				customFields[customId] = customValue;
-			} else {
-				console.log('Custom field value null {' + customId + ': null} for: '+ taskName);
-			}
+				customFieldsArr[customId] = customValue;
+      }
+      
 		});
-		createTask(taskName,project,htmlNotes,customFields,function(){
-			console.log("Created a task names", taskName);
-			createTasks(tasks);
-		},function(){
-			console.log("Failed to create a task!",taskName);
+		createTask(taskName, notes, customFieldsArr, function(){
+      //onSuccess
+      console.log("Created a task! Task:", taskName);
+      //call itself again on success for remaining tasks
+      customFields(tasks);
+      //onFail
+		},function(){ 
+			console.log("Failed creating a task! Task:", taskName);
 		});
 	} else {
-		console.log("Done creating tasks");
+		console.log("All done!");
 	}
 }
 
-function createTask(taskName,project,htmlNotes,customFields,onSuccess,onFail){
+
+function createTask(taskName, notes, customFieldsArr, onSuccess, onFail){
 	url = base + 'tasks'
 	$.post({
 		url,
@@ -84,8 +71,8 @@ function createTask(taskName,project,htmlNotes,customFields,onSuccess,onFail){
 			"name": taskName,
 			"projects": project,
 			"assignee": "me",
-			"html_notes": htmlNotes,
-			"custom_fields": customFields 
+			"html_notes": notes,
+			"custom_fields": customFieldsArr
 			}
 	}).done(function(){
 		onSuccess();
@@ -94,9 +81,20 @@ function createTask(taskName,project,htmlNotes,customFields,onSuccess,onFail){
 	});
 }
 
-
+// add import button in top nav, setup ajax requests
 $(document).ready(function(){
-	$(".Omnibutton").after(import_link);	//add import button
-	//console.log("Current project id: " + project);
-	getTasks ();
+  $(".Omnibutton").after(import_link);                              
+  if(!chrome.runtime.error){
+		manifest = chrome.runtime.getManifest();
+    client_name = ['chrome-extension', manifest.version, manifest.name].join(':'); //tell the asana api who we are
+  }
+  $.ajaxSetup({
+    options: { client_name: client_name },                        
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader('X-Allow-Asana-Client', '1');  //for browser session requests        
+    }
+  });
+		
+	//console.log("Current project id: ", project);
+	getTasks();
 });
