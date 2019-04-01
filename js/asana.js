@@ -2,15 +2,36 @@ project = window.location.pathname.split('/')[2];
 base = 'https://app.asana.com/api/1.0/';
 
 
-import_link = '<div class="TopbarPageHeaderGlobalActions-omnibutton">                                                         	   \
-                    <select class="Button Button--small" id="template-menu">                                                       \
-                      <option></option>                                                                                            \
-                      <option value="1115963254384170">Arc Microtemplate</option>                                                  \
-                      <option value="1115958280217388">Gauge Microtemplate</option>                                                \
-                      <option value="1115958280217459">Catalog Microtemplate</option>                                              \
-                   </select>                                                                                                       \
-                   <button class="Button Omnibutton Button--primary Button--small" id="template-button">Import</button>            \
-               </div>'
+import_link = "<div class=\"TopbarPageHeaderGlobalActions-omnibutton\">\
+                    <select class=\"Button Button--small\" id=\"template-menu\">\
+                      <option></option>\
+                      <option value=\"1115963254384170\">Arc Microtemplate</option>\
+                      <option value=\"1115958280217388\">Gauge Microtemplate</option>\
+											<option value=\"1115958280217459\">Catalog Microtemplate</option>\
+											<option value=\"1116021657718617\">Onsite Training</option>\
+											<option value=\"1116021657718685\">Custom Webinar</option>\
+                      <option value=\"1116024833220231\">Data Prov: PTP</option>\
+                      <option value=\"973796920291340\" >Data Prov: Manual</option>\
+                      <option value=\"1116024833220138\">Data Prov: SIF, 1R</option>\
+                      <option value=\"1116024101635839\">Data Prov: Skyward CSV</option>\
+                      <option value=\"1116024101635747\">Data Prov: SIStemic CSV</option>\
+											<option value=\"1116023701545721\">Data Prov: CSV & Automation</option>\
+											<option value=\"1116014548445340\">Change Mgmt: 1 Day</option>\
+                      <option value=\"1116016074171105\">Change Mgmt: 1 Day & Follow-Up</option>\
+											<option value=\"1116021657718549\">Change Mgmt: Planning & Cons.</option>\
+											<option value=\"1116012872578413\">Change Mgmt: Remote Cons.</option>\
+                      <option value=\"1116014548445242\">Adoption: 1 Day & Follow-Up</option>\
+                      <option value=\"1116013856392175\">Adoption: 1 or 10 Day</option>\
+                      <option value=\"1116012152464297\">Adoption: Remote Cons.</option>\
+											<option value=\"1115967697253308\">Content: Custom</option>\
+											<option value=\"1115981715789000\">Content: Restructuring</option>\
+											<option value=\"1115972203093982\">Content: Curriculum Mgmt.</option>\
+                      <option value=\"1115981715788932\">Content: White Glove Discovery </option>\
+											<option value=\"1115978998354340\">Content: Instructional Design Cons.</option>\
+                      <option value=\"1115978998354255\">Content: Course Evaluation Services</option>\
+                   </select>\
+                   <button class=\"Button Omnibutton Button--primary Button--small\" id=\"template-button\">Import</button>\
+               </div>"
                    
                    
 function getTasks () {
