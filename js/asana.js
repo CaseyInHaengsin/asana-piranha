@@ -1,9 +1,8 @@
-project = window.location.pathname.split('/')[2];
 base = 'https://app.asana.com/api/1.0/';
 
 
 import_link = "<div class=\"TopbarPageHeaderGlobalActions-omnibutton\">\
-                    <select class=\"Button Button--small\" id=\"template-menu\">\
+                    <select class=\"Button Button--small asana-import\" id=\"import-micro\">\
                       <option></option>\
                       <option value=\"1115963254384170\">Arc Microtemplate</option>\
                       <option value=\"1115958280217388\">Gauge Microtemplate</option>\
@@ -29,18 +28,37 @@ import_link = "<div class=\"TopbarPageHeaderGlobalActions-omnibutton\">\
                       <option value=\"1115981715788932\">Content: White Glove Discovery </option>\
 											<option value=\"1115978998354340\">Content: Instructional Design Cons.</option>\
                       <option value=\"1115978998354255\">Content: Course Evaluation Services</option>\
-                   </select>\
-                   <button class=\"Button Omnibutton Button--primary Button--small\" id=\"template-button\">Import</button>\
+									 </select>\
+									 <input id=\"import-input\" class=\"textInput textInput--medium asana-import\" placeholder=\"project...\" type=\"text\" role=\"combobox\" value=\"\">\
+                   <button class=\"Button Omnibutton Button--primary Button--small asana-import\" id=\"import-button\">Import</button>\
                </div>"
                    
-                   
+// add import button in top nav, setup ajax requests
+$(document).ready(function(){
+	$(".Omnibutton").after(import_link);
+	if(!chrome.runtime.error){
+		manifest = chrome.runtime.getManifest();
+		client_name = ['chrome-extension', manifest.version, manifest.name].join(':'); //tell the asana api who we are
+	}
+	$.ajaxSetup({
+		options: { client_name: client_name },                        
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader('X-Allow-Asana-Client', '1');  //for browser session requests        
+		}
+	});                             
+	//console.log("Current project id: ", project);
+	getTasks();
+});
+
+//get complete task list for templates
 function getTasks () {
-	$('#template-button').click(function(){
-		projectId = $('#template-menu').find(":selected").attr('value');
+	$('#import-button').click(function(){
+		projectId = $('#import-micro').find(":selected").attr('value');
 		if (projectId == undefined){
-			alert("Please select a template before importing");
-		} else {
-			//console.log(projectId);
+			alert("Please open a project and select a microtemplate to import.");
+		} 
+		else {
+			$('.asana-import').attr('disabled', true)
 			url = base + 'projects/' + projectId + '/tasks?opt_pretty&opt_expand=html_notes&opt_expand=this'
       $.get({url}, function(response){
         tasks = response.data
@@ -50,7 +68,7 @@ function getTasks () {
 	});
 }
 
-//loop through array one at a time, call itself to ensure the requests are synchronous (instead of using a for loop)
+//loop through array, call itself to ensure the requests are synchronous (instead of using a for loop)
 function customFields(tasks) {
 	if(tasks.length > 0){
 		task = tasks.pop();
@@ -58,7 +76,7 @@ function customFields(tasks) {
 		notes = task.html_notes
 		taskFields = task.custom_fields
 		customFieldsArr = {};
-		
+
 		$.each(taskFields, function(){
 			customId = this.id
 			customType = this.enum_value
@@ -69,6 +87,7 @@ function customFields(tasks) {
       }
       
 		});
+
 		createTask(taskName, notes, customFieldsArr, function(){
       //onSuccess
       console.log("Created a task! Task:", taskName);
@@ -80,11 +99,13 @@ function customFields(tasks) {
 		});
 	} else {
 		console.log("All done!");
+		$('.asana-import').attr('disabled', false)
 	}
 }
 
-
+//create task, loop back through customFields on success
 function createTask(taskName, notes, customFieldsArr, onSuccess, onFail){
+	project = $('#import-input').val();
 	url = base + 'tasks'
 	$.post({
 		url,
@@ -101,21 +122,3 @@ function createTask(taskName, notes, customFieldsArr, onSuccess, onFail){
 		onFail();
 	});
 }
-
-// add import button in top nav, setup ajax requests
-$(document).ready(function(){
-  $(".Omnibutton").after(import_link);                              
-  if(!chrome.runtime.error){
-		manifest = chrome.runtime.getManifest();
-    client_name = ['chrome-extension', manifest.version, manifest.name].join(':'); //tell the asana api who we are
-  }
-  $.ajaxSetup({
-    options: { client_name: client_name },                        
-    beforeSend: function(xhr) {
-      xhr.setRequestHeader('X-Allow-Asana-Client', '1');  //for browser session requests        
-    }
-  });
-		
-	//console.log("Current project id: ", project);
-	getTasks();
-});
