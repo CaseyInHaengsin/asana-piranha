@@ -2,6 +2,7 @@ base = 'https://app.asana.com/api/1.0/';
 
 
 import_link = "<div class=\"TopbarPageHeaderGlobalActions-omnibutton\">\
+										<input id=\"import-input\" class=\"textInput textInput--medium asana-import\" placeholder=\"project...\" type=\"text\" role=\"combobox\" value=\"\">\
                     <select class=\"Button Button--small asana-import\" id=\"import-micro\">\
                       <option></option>\
                       <option value=\"1115963254384170\">Arc Microtemplate</option>\
@@ -29,7 +30,6 @@ import_link = "<div class=\"TopbarPageHeaderGlobalActions-omnibutton\">\
 											<option value=\"1115978998354340\">Content: Instructional Design Cons.</option>\
                       <option value=\"1115978998354255\">Content: Course Evaluation Services</option>\
 									 </select>\
-									 <input id=\"import-input\" class=\"textInput textInput--medium asana-import\" placeholder=\"project...\" type=\"text\" role=\"combobox\" value=\"\">\
                    <button class=\"Button Omnibutton Button--primary Button--small asana-import\" id=\"import-button\">Import</button>\
                </div>"
                    
@@ -112,7 +112,7 @@ function createTask(taskName, notes, customFieldsArr, onSuccess, onFail){
 		data: {
 			"name": taskName,
 			"projects": project,
-			"assignee": "me",
+//			"assignee": "me",
 			"html_notes": notes,
 			"custom_fields": customFieldsArr
 			}

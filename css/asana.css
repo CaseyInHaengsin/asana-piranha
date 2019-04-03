@@ -1,3 +1,6 @@
 div.TopbarPageHeaderGlobalActions-upgradeButton, a.topbarHelpMenuButton{
   display:none
 }
+#import-micro, #import-input {
+  width: 120px
+}
