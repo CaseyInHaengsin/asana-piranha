@@ -59,7 +59,7 @@ function getTasks () {
 		} 
 		else {
 			$('.asana-import').attr('disabled', true)
-			url = base + 'projects/' + projectId + '/tasks?opt_pretty&opt_expand=html_notes&opt_expand=this'
+			url = base + 'projects/' + projectId + '/tasks?opt_pretty&opt_expand=(custom_fields|html_notes)'
       $.get({url}, function(response){
         tasks = response.data
         customFields(tasks)
