@@ -1,6 +1,4 @@
 base = 'https://app.asana.com/api/1.0/';
-
-
 import_link = "<div class=\"TopbarPageHeaderGlobalActions-omnibutton\">\
 										<input id=\"import-input\" class=\"textInput textInput--medium asana-import\" placeholder=\"project...\" type=\"text\" role=\"combobox\" value=\"\">\
                     <select class=\"Button Button--small asana-import\" id=\"import-micro\">\
@@ -59,7 +57,7 @@ function getTasks () {
 		} 
 		else {
 			$('.asana-import').attr('disabled', true)
-			url = base + 'projects/' + projectId + '/tasks?opt_pretty&opt_expand=(custom_fields|html_notes)'
+			url = base + 'projects/' + projectId + '/tasks?opt_expand=(custom_fields|html_notes)'
       $.get({url}, function(response){
         tasks = response.data
         customFields(tasks)
@@ -112,7 +110,6 @@ function createTask(taskName, notes, customFieldsArr, onSuccess, onFail){
 		data: {
 			"name": taskName,
 			"projects": project,
-//			"assignee": "me",
 			"html_notes": notes,
 			"custom_fields": customFieldsArr
 			}
