@@ -57,7 +57,7 @@ function getTasks () {
 		} 
 		else {
 			$('.asana-import').attr('disabled', true)
-			url = base + 'projects/' + projectId + '/tasks?opt_expand=(custom_fields|html_notes)'
+			url = base + 'projects/' + projectId + '/tasks?opt_expand=(custom_fields|html_notes|resource_subtype)'
       $.get({url}, function(response){
         tasks = response.data
         customFields(tasks)
@@ -71,29 +71,44 @@ function customFields(tasks) {
 	if(tasks.length > 0){
 		task = tasks.pop();
 		taskName = task.name
-		notes = task.html_notes
 		taskFields = task.custom_fields
 		customFieldsArr = {};
 
 		$.each(taskFields, function(){
 			customId = this.id
 			customType = this.enum_value
-			
 			if (customType != null){
-				customValue = JSON.stringify(this.enum_value.id)
+				customValue = this.enum_value.id
 				customFieldsArr[customId] = customValue;
       }
-      
 		});
+	
+		subType = task.resource_subtype
+		notes = task.html_notes
+		project = $('#import-input').val();
 
-		createTask(taskName, notes, customFieldsArr, function(){
-      //onSuccess
-      console.log("Created a task! Task:", taskName);
-      //call itself again on success for remaining tasks
+		if(subType == 'section'){
+			dataArr = {
+				"name": taskName,
+				"projects": project,
+				"html_notes": notes,
+				"custom_fields": customFieldsArr
+			}
+		} else {
+			dataArr = {
+			"name": taskName,
+			"projects": project,
+			"html_notes": notes,
+			"resource_subtype": subType,
+			"custom_fields": customFieldsArr
+			}
+		}
+
+		createTask(dataArr, function(){
+      console.log("Created a task! Task:", taskName);  //onSuccess
       customFields(tasks);
-      //onFail
 		},function(){ 
-			console.log("Failed creating a task! Task:", taskName);
+			console.log("Failed creating a task! Task:", taskName);  //onFail
 		});
 	} else {
 		console.log("All done!");
@@ -102,20 +117,12 @@ function customFields(tasks) {
 }
 
 //create task, loop back through customFields on success
-function createTask(taskName, notes, customFieldsArr, onSuccess, onFail){
-	project = $('#import-input').val();
+function createTask(dataArr, onSuccess, onFail){
 	url = base + 'tasks'
-	$.post({
-		url,
-		data: {
-			"name": taskName,
-			"projects": project,
-			"html_notes": notes,
-			"custom_fields": customFieldsArr
-			}
+	$.post({url,
+		data: dataArr
 	}).done(function(){
 		onSuccess();
 	}).fail(function(){
-		onFail();
-	});
+		onFail();});
 }
