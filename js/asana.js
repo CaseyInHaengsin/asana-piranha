@@ -29,7 +29,7 @@ import_link = "<div class=\"TopbarPageHeaderGlobalActions-omnibutton\">\
                       <option value=\"1115978998354255\">Content: Course Evaluation Services</option>\
 									 </select>\
                    <button class=\"Button Omnibutton Button--primary Button--small asana-import\" id=\"import-button\">Import</button>\
-               </div>"
+               </div>";
                    
 // add import button in top nav, setup ajax requests
 $(document).ready(function(){

@@ -10,7 +10,7 @@
   },
   "content_scripts": [ {
     "css": ["css/asana.css"],
-    "js": [ "js/jquery.min.js", "js/asana.js" ], 
+    "js": [ "js/experimental.js" ], 
     "matches": [ "https://app.asana.com/*" ]
  }],
   "permissions": ["activeTab"]
