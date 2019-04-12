@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Asana Piranha",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Import Asana microtemplates for Instructure, Inc - INTERNAL ONLY",
   "icons": {
      "16": "icon16.png",
@@ -10,7 +10,7 @@
   },
   "content_scripts": [ {
     "css": ["css/asana.css"],
-    "js": [ "js/experimental.js" ], 
+    "js": [ "js/jquery.min.js", "js/asana.js" ], 
     "matches": [ "https://app.asana.com/*" ]
  }],
   "permissions": ["activeTab"]

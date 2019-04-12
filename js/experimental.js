@@ -78,18 +78,18 @@ var customFields = function (tasks) {
 			}
 		} else {
 			dataArr = {
-			"name": taskName,
-			"projects": project,
-			"html_notes": notes,
-			"resource_subtype": subType,
-			"custom_fields": customFieldsArr
+        "name": taskName,
+        "projects": project,
+        "html_notes": notes,
+        "resource_subtype": subType,
+        "custom_fields": customFieldsArr
 			}
     }
 
-		createTask(dataArr, function(){
+		createTask(dataArr, function () {
+      console.log("Created a task! Task:", taskName);  //onSuccess
       customFields(tasks);
-      //console.log("Created a task! Task:", taskName);  //onSuccess
-		},function(){ 
+		},function () { 
 			console.log("Failed creating a task! Task:", taskName);  //onFail
 		});
 	} else {
@@ -98,17 +98,14 @@ var customFields = function (tasks) {
 	}
 }
 
-//create task, loop back through customFields on success
-function createTask(dataArr, onSuccess, onFail){
-	callAsanaApi('POST', `tasks`, {}, dataArr, function (response){
-    onSuccess();
+//create task, loop back through customFields onSuccess
+var createTask = function (dataArr, status, onSuccess, onFail) {
+	callAsanaApi('POST', `tasks`, {}, dataArr, function (response) {
+    console.log(status);
   });
 }
 
-
-
-
-// First load or page reload
+//first load/page reload 
 window.addEventListener('load', function () {
   console.log("experimental.js loaded");
   var avatar = document.getElementsByClassName('TopbarPageHeaderGlobalActions-settingsMenuButton')[0];
@@ -116,8 +113,8 @@ window.addEventListener('load', function () {
 	getTasks();
 });
 
-
-var callAsanaApi = function (request, path, options, data, callback) {
+//asana api
+function callAsanaApi (request, path, options, data, callback) {
   var xhr = new XMLHttpRequest();
   xhr.addEventListener('load', function () {
     callback(JSON.parse(this.response));
@@ -146,4 +143,6 @@ var callAsanaApi = function (request, path, options, data, callback) {
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.setRequestHeader('X-Allow-Asana-Client', '1'); // Required to authenticate for POST & PUT
   xhr.send(requestData);
+  var status = xhr.status
+  return status
 };
