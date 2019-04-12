@@ -1,5 +1,4 @@
 //experimental.js - vanilla js testing
-
 var importLink = document.createElement("div");
     importLink.className = "TopbarPageHeaderGlobalActions-omnibutton"
     importLink.innerHTML = "<input id=\"import-input\" class=\"textInput textInput--medium asana-import\" placeholder=\"project...\" type=\"text\" role=\"combobox\" value=\"\">\
@@ -33,9 +32,14 @@ var importLink = document.createElement("div");
                             <button class=\"Button Omnibutton Button--primary Button--small asana-import\" id=\"import-button\">Import</button>";
 
 
+
 //get complete task list for templates
 var getTasks = function () {
   document.getElementById('import-button').onclick = function () {
+    x = document.getElementsByClassName("asana-import");
+    for (var i = 0; i < x.length; i++) {
+      x[i].setAttribute("disabled", true)
+    }
     var selector = document.getElementById('import-micro');
     var projectId = selector[selector.selectedIndex].value;
 		if (projectId != '') {
@@ -57,9 +61,9 @@ var customFields = function (tasks) {
    
     var customFieldsArr = {};
     for(var k = 0; k < taskFields.length; k++) {
-      customId = taskFields[k].id
-      customType = taskFields[k].enum_value
-			if (customType != null){
+      var customId = taskFields[k].id
+      var customType = taskFields[k].enum_value
+			if (customType != null) {
         customValue = customType.id
         //console.log(customId, customValue);
         customFieldsArr[customId] = customValue;
@@ -87,38 +91,48 @@ var customFields = function (tasks) {
     }
 
 		createTask(dataArr, function () {
-      console.log("Created a task! Task:", taskName);  //onSuccess
+      //console.log("Created a task! Task:", taskName);  //onSuccess
       customFields(tasks);
 		},function () { 
 			console.log("Failed creating a task! Task:", taskName);  //onFail
 		});
 	} else {
 		console.log("All done!");
-		//$('.asana-import').attr('disabled', false)
+    for (var i = 0; i < x.length; i++) {
+      x[j].removeAttribute("disabled");
+    }
 	}
 }
 
 //create task, loop back through customFields onSuccess
-var createTask = function (dataArr, status, onSuccess, onFail) {
-	callAsanaApi('POST', `tasks`, {}, dataArr, function (response) {
-    console.log(status);
+var createTask = function (dataArr, onSuccess, onFail) {
+  callAsanaApi('POST', `tasks`, {}, dataArr, function () {
+    if (status >= 200 && status < 300) {
+      onSuccess();
+    } else {
+      onFail();
+    }
   });
 }
 
 //first load/page reload 
 window.addEventListener('load', function () {
-  console.log("experimental.js loaded");
+  //console.log("experimental.js loaded");
   var avatar = document.getElementsByClassName('TopbarPageHeaderGlobalActions-settingsMenuButton')[0];
   document.getElementsByClassName('TopbarPageHeaderGlobalActions')[0].insertBefore(importLink, avatar);
 	getTasks();
 });
 
 //asana api
-function callAsanaApi (request, path, options, data, callback) {
+var callAsanaApi = function (request, path, options, data, callback) {
   var xhr = new XMLHttpRequest();
   xhr.addEventListener('load', function () {
     callback(JSON.parse(this.response));
   });
+  xhr.onreadystatechange = function () {
+    status = xhr.status;
+    return status;
+  };
   var manifest = chrome.runtime.getManifest();
   var client_name = ['chrome-extension', manifest.version, manifest.name].join(':'); // Be polite to Asana API
   var requestData;
@@ -143,6 +157,4 @@ function callAsanaApi (request, path, options, data, callback) {
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.setRequestHeader('X-Allow-Asana-Client', '1'); // Required to authenticate for POST & PUT
   xhr.send(requestData);
-  var status = xhr.status
-  return status
 };
