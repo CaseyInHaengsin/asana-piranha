@@ -32,20 +32,19 @@ var importLink = document.createElement("div");
                             <button class=\"Button Omnibutton Button--primary Button--small asana-import\" id=\"import-button\">Import</button>";
 
 
-//get complete task list for templates
-var getTasks = function () {
+// Get complete task list from /projects/projectId/tasks
+var getTasks = function () { 
 	$('#import-button').click(function(){
 		projectId = $('#import-micro').find(":selected").attr('value');
-		if (projectId == undefined){
+		if (projectId == undefined) {
 			alert("Please open a project and select a microtemplate to import.");
-		} 
-		else {
-			$('.asana-import').attr('disabled', true)
+		} else {
+			$('.asana-import').attr('disabled', true);
 			url = baseUrl + 'projects/' + projectId + '/tasks?opt_expand=(custom_fields|html_notes|resource_subtype)'
-      $.get({url}, function(response){
+      $.get({url}, function(response) {
         tasks = response.data
-        customFields(tasks)
-      })
+        customFields(tasks);
+      });
 		}
 	});
 }

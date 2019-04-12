@@ -31,8 +31,6 @@ var importLink = document.createElement("div");
                             </select>\
                             <button class=\"Button Omnibutton Button--primary Button--small asana-import\" id=\"import-button\">Import</button>";
 
-
-
 //get complete task list for templates
 var getTasks = function () {
   document.getElementById('import-button').onclick = function () {
@@ -51,7 +49,6 @@ var getTasks = function () {
   	}
   }
 }
-
 
 var customFields = function (tasks) {
 	if(tasks.length > 0){
