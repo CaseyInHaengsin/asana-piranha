@@ -9,6 +9,7 @@ var importLink = document.createElement("div");
                               <option value=\"1115958280217459\">Catalog Microtemplate</option>\
                               <option value=\"1116021657718617\">Onsite Training</option>\
                               <option value=\"1116021657718685\">Custom Webinar</option>\
+                              <option value=\"1115960415944898\">Custom URL</option>\
                               <option value=\"1116024833220231\">Data Prov: PTP</option>\
                               <option value=\"973796920291340\" >Data Prov: Manual</option>\
                               <option value=\"1116024833220138\">Data Prov: SIF, 1R</option>\
@@ -96,7 +97,7 @@ var customFields = function (tasks) {
 	} else {
 		console.log("All done!");
     for (var i = 0; i < x.length; i++) {
-      x[j].removeAttribute("disabled");
+      x[i].removeAttribute("disabled");
     }
 	}
 }
