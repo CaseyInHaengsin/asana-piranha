@@ -7,6 +7,7 @@ var importLink = document.createElement("div");
                               <option value=\"1115963254384170\">Arc Microtemplate</option>\
                               <option value=\"1115958280217388\">Gauge Microtemplate</option>\
                               <option value=\"1115958280217459\">Catalog Microtemplate</option>\
+                              <option value=\"1130770051555112\">Practice Microtemplate</option>\
                               <option value=\"1116021657718617\">Onsite Training</option>\
                               <option value=\"1116021657718685\">Custom Webinar</option>\
                               <option value=\"1115960415944898\">Custom URL</option>\
