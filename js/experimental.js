@@ -61,10 +61,10 @@ var customFields = function (tasks) {
    
     var customFieldsArr = {};
     for(var k = 0; k < taskFields.length; k++) {
-      var customId = taskFields[k].id
+      var customId = taskFields[k].gid
       var customType = taskFields[k].enum_value
 			if (customType != null) {
-        customValue = customType.id
+        customValue = customType.gid
         //console.log(customId, customValue);
         customFieldsArr[customId] = customValue;
       }
